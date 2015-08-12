@@ -1,0 +1,83 @@
+.box{
+  width: 150px;
+  height: 175px;
+  text-align: center;
+  padding: 20px;
+  display: inline-table;
+  margin: 3px;
+  cursor: default;
+}
+
+
+.box p, h3, h2{
+  font-family: Courier, monospace;
+}
+
+.timer{
+  background-color: #DDDDDD;
+  color: #111111;
+}
+
+#addTimer{
+  background-image: url("plus-filled.png");
+}
+
+#addTimer:hover{
+  background-image: url("plus-not-filled.png");
+  cursor:pointer;cursor:hand;
+}
+
+.button{
+  display: inline-block;
+  border-radius: 3px;
+  border: #6B6B6B solid 1px;
+  padding: 3px;
+  margin: 3px;
+}
+
+.button:hover{
+  background-color: #CDCDCD;
+  cursor:pointer;cursor:hand
+}
+
+.exit{
+  height: 15px;
+  width: 15px;
+  background-image: url("x-light.png");
+  display: block;
+  float: right;
+}
+
+.exit:hover{
+  background-image: url("x-dark.png");
+  cursor:pointer;cursor:hand;
+}
+
+.hidden-box{
+  border: none;
+  font-family: Courier, monospace;
+  font-size: 30px;
+  font-weight: bold;
+  max-width: 150px;
+  text-align: center;
+  color: #000000;
+  background-color: #DDDDDD;
+
+}
+
+.h2{
+  font-size: 1.5em;
+}
+
+.h3{
+  font-size: 1.17em;
+}
+
+.time{
+  display: inline;
+  max-width: 50px;
+  padding-left: 0px;
+  padding-right: 0px;
+  padding-top: inherit;
+  padding-bottom: inherit;
+}

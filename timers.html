@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href="main.css" rel="stylesheet">
+  </head>
+  <body onload="pageLoad()">
+    <div id="div1">
+      <div id="addTimer" class="box" onclick="addTimer()">
+        <h3>Add</h3><h3>more</h3><h3>timers.</h3>
+      </div>
+    </div>
+
+    <audio id="snd_alarm">
+      <source src="alarm.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Timer Javascript -->
+    <script>
+
+    // Global Variables
+      var numOfTimers = 0;
+      var timers = []
+      var ticker;
+      var snd_alarm = document.getElementById("snd_alarm");
+
+
+      //Stuff to do when the page loads
+      function pageLoad() {
+      	addTimer();
+      	infiniteLoop();
+      }
+
+      //Sets the clock ticking
+      function infiniteLoop(){
+      	ticker = setInterval(function() {update()},10);
+      }
+
+      //What to do when the clock ticks
+      function update(){
+      	for (var i = 0; i<timers.length; i+=1){
+      		if (timers[i].isRunning == true){
+      			timers[i].countdown -= 0.01;
+      			if (timers[i].countdown <= 0){
+      				alarm(timers[i]);
+      				timers[i].isRunning = false;
+      				timers[i].countdown = 0;
+      			}
+      			updateHTMLTime(timers[i]);
+      		}
+      	}
+      	//var time = document.getElementById("time");
+      	//var timertesttext = time.text;
+      	//time.innerHTML = timertesttext;
+      }
+
+      function alarm(timer){
+        console.log(timer.timerName + " has completed!");
+        snd_alarm.play();
+      }
+
+      //Updating the display
+      function updateHTMLTime(timer){
+        var minutes = document.getElementById("minutes" + (timer.number + 1));
+        var seconds = document.getElementById("seconds" + (timer.number + 1));
+      	var curSeconds = Math.ceil(timer.countdown % 60);
+      	var curMinutes = Math.ceil((timer.countdown - curSeconds) / 60);
+      	if (curSeconds < 10){
+      		curSeconds = "0" + curSeconds;
+      	}
+      	if (curMinutes < 10){
+      		curMinutes = "0" + curMinutes;
+      	}
+      	minutes.value = curMinutes;
+        seconds.value = curSeconds;
+      }
+
+      //Adding a new timer
+      function addTimer() {
+        var newTimer = new Timer(numOfTimers);
+        timers[numOfTimers] = newTimer;
+        makeHTMLTimer();
+        updateHTMLTime(newTimer);
+      };
+
+      //Timer Object
+      function Timer(number) {
+      	this.countdownLength = 3;
+        this.countdown = this.countdownLength;
+        this.timerName = "Timer " + (number + 1);
+        this.isRunning = false;
+        this.number = number;
+      };
+
+      //Creates the html for a new timer
+      function makeHTMLTimer(){
+        numOfTimers = numOfTimers + 1;
+
+        var newTimer = document.createElement("div");
+
+        //Timer title
+        var title = document.createElement("input");
+        title.id = "title" + numOfTimers;
+        title.className = "hidden-box h3";
+        title.type = "text";
+        title.value = "Timer " + numOfTimers;
+
+        var minutes = document.createElement("input");
+        minutes.id = "minutes" + numOfTimers;
+        minutes.className = "hidden-box h2 time";
+        minutes.type = "text";
+        minutes.value = "00";
+
+        var random = document.createElement("h2");
+        random.innerHTML = ":";
+        random.className = "time h2";
+        random.id = "colon";
+
+        var seconds = document.createElement("input");
+        seconds.id = "seconds" + numOfTimers;
+        seconds.className = "hidden-box h2 time";
+        seconds.type = "text";
+        seconds.value = "00";
+
+        //Timers start button
+        var start = document.createElement("p");
+        start.innerHTML = ("Start");
+        start.className = "start button";
+        start.id = "start" + numOfTimers;
+        start.isStart = true;
+        
+        //Start/Pause button function for the timers
+        start.onclick = function startButton() {
+	        timer = timers[start.id.slice(5) - 1];
+        	if(start.isStart == true){
+	          timer.isRunning = true;
+	          start.isStart = false;
+	          start.innerHTML = "Pause";
+	      	}
+	      	else{
+            if (timer.countdown == 0){
+
+            } else {
+	      	    timer.isRunning = false;
+	      	    start.isStart = true;
+	      	    start.innerHTML = "Start";
+            }
+	      	}
+        }
+
+        //Timers reset button
+        var reset = document.createElement("p");
+        reset.innerHTML = "Reset";
+        reset.className = "reset button";
+
+        //Reset button function for the timers
+        reset.onclick = function resetTimer(){
+          timer = timers[start.id.slice(5) - 1];
+          timer.countdown = timer.countdownLength;
+          timer.isRunning = false;
+          updateHTMLTime(timer);
+	      start.isStart = true;
+	      start.innerHTML = "Start";
+        };
+
+        //Timers edit button
+        var edit = document.createElement("p");
+        edit.innerHTML = "Edit";
+        edit.className = "edit button";
+      	edit.id = "edit" + numOfTimers;
+      	edit.isEdit = false;
+      	
+        //Edit button function for the timers
+        edit.onclick = function editTimer() {
+      	};
+
+        //Timers X button
+        var exit = document.createElement("div");
+        exit.className = "exit";
+        exit.id = "exit" + numOfTimers;
+        
+        //X button function for the timers
+        exit.onclick =  function delTimer() {
+        	number = exit.id.slice(4);
+      		newTimer.parentNode.removeChild(newTimer);
+      		for (i=0; i<timers.length; i++) {
+      			if (timers[i].number == number + 1) {
+      				timers.splice(number,1);
+      			}
+      		}
+      	};
+
+        newTimer.appendChild(exit);
+        newTimer.appendChild(title);
+        newTimer.appendChild(minutes);
+        newTimer.appendChild(random);
+        newTimer.appendChild(seconds);
+        newTimer.appendChild(start);
+        newTimer.appendChild(reset);
+        newTimer.appendChild(edit);
+        newTimer.className = "timer box";
+        var addTimer = document.getElementById("addTimer");
+        document.getElementById("div1").insertBefore(newTimer, addTimer);
+        title.focus();
+      }
+
+      //Makes 'enter' key deselect active textbox
+      document.onkeydown=function(){
+        if(window.event.keyCode=='13' && "activeElement" in document){
+          document.activeElement.blur();
+        }
+      }
+
+    </script>
+  </body>
+</html>
